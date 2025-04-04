@@ -1,9 +1,14 @@
 from django import forms
-from core.models import Rating
-from crispy_forms.helper import FormHelper
+from core.models import Rating, Restaurant
 
-class RatingForm(forms.ModelForm):
+class RestaurantForm(forms.ModelForm):
     class Meta:
-        model = Rating
-        fields = ['restaurant','user','rating']
+        model = Restaurant
+        fields = ['name', 'restaurant_type']
     
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__(*args,**kwargs)
+    #     self.fields['user'].widget.attrs.update({'class':'form-select'})
+    #     self.fields['restaurant'].widget.attrs.update({'class':'form-select'})
+    #     self.fields['rating'].widget.attrs.update({'class':'form-control'})
+        
