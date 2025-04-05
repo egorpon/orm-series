@@ -2,13 +2,11 @@
 <!--  -->
 {%block content%}
 <!--  -->
-<form class="" method="POST">
-  <!--  -->
-  {%csrf_token%}
-  <!--  -->
+{%for rating in ratings%}
 
-  {{form.as_p}}
-  <!--  -->
-  <button type="submit" class="btn btn-primary">Submit</button>
-</form>
+<p>{{rating.restaurant.name}} - {{rating.rating}}</p>
+<!--  -->
+
+{%endfor%}
+<!--  -->
 {%endblock%}
