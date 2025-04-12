@@ -29,6 +29,8 @@ class Restaurant(models.Model):
     latitude = models.FloatField(validators=[MinValueValidator(-90),MaxValueValidator(90)])
     longitude = models.FloatField(validators=[MinValueValidator(-180),MaxValueValidator(180)])
     restaurant_type = models.CharField(max_length=2, choices= TypeChoices.choices)
+    capacity = models.PositiveSmallIntegerField(null=True, blank=True)
+    nickname = models.CharField(max_length=200, null=True, blank=True)
 
 
     class Meta:
@@ -43,15 +45,30 @@ class Restaurant(models.Model):
         print(self._state.adding)
         super().save(*args,**kwargs)
 
+class Staff(models.Model):
+    name = models.CharField(max_length=128)
+    restaurant = models.ManyToManyField(Restaurant, through='Staff_Restaurant')
+
+    def __str__(self):
+        return self.name
+
+class Staff_Restaurant(models.Model):
+    staff = models.ForeignKey(Staff, on_delete=models.CASCADE)
+    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
+    salary = models.FloatField(null=True)
+
+
+
 class Rating(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, related_name='ratings')
     rating = models.PositiveSmallIntegerField(validators=[MinValueValidator(1),MaxValueValidator(5)])
-
+    
     def __str__(self):
         return f'Rating: {self.rating}'
     
 class Sale(models.Model):
     restaurant = models.ForeignKey(Restaurant, on_delete=models.SET_NULL, null=True, related_name='sales')
     income = models.DecimalField(max_digits=8, decimal_places=2)
+    expenditure = models.DecimalField(max_digits=8, decimal_places=2)
     datetime = models.DateTimeField()

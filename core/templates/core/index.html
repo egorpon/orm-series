@@ -2,11 +2,8 @@
 <!--  -->
 {%block content%}
 <!--  -->
-{%for rating in ratings%}
-
-<p>{{rating.restaurant.name}} - {{rating.rating}}</p>
-<!--  -->
-
+{% for r in ratings %}
+<p>{{r.restaurant.name}}--{{r}}</p>
 {%endfor%}
 <!--  -->
 {%endblock%}
