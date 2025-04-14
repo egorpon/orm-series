@@ -1,14 +1,21 @@
 from django import forms
-from core.models import Rating, Restaurant
+from core.models import Rating, Restaurant, Order
 
-class RestaurantForm(forms.ModelForm):
+
+class ProductStockException(Exception):
+    pass
+
+
+class ProductOrderForm(forms.ModelForm):
     class Meta:
-        model = Restaurant
-        fields = ['name', 'restaurant_type']
+        model = Order
+        fields = ('product', 'number_of_items')
     
-    # def __init__(self, *args, **kwargs):
-    #     super().__init__(*args,**kwargs)
-    #     self.fields['user'].widget.attrs.update({'class':'form-select'})
-    #     self.fields['restaurant'].widget.attrs.update({'class':'form-select'})
-    #     self.fields['rating'].widget.attrs.update({'class':'form-control'})
+    def save(self, commit = True):
+        order = super().save(commit=False)
+        if order.product.number_in_stock < order.number_of_items:
+            raise ProductStockException(f'Not enough items in stock for product: {order.product}')
         
+        if commit:
+            order.save()
+        return order 
