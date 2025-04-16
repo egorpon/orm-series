@@ -70,7 +70,7 @@ class Rating(models.Model):
 class Sale(models.Model):
     restaurant = models.ForeignKey(Restaurant, on_delete=models.SET_NULL, null=True, related_name='sales')
     income = models.DecimalField(max_digits=8, decimal_places=2)
-    expenditure = models.DecimalField(max_digits=8, decimal_places=2)
+    # expenditure = models.DecimalField(max_digits=8, decimal_places=2)
     datetime = models.DateTimeField()
 
 
@@ -87,4 +87,19 @@ class Order(models.Model):
 
     def __str__(self):
         return f'{self.number_of_items} X {self.product.name}'
+
+class Account(models.Model):
+    name = models.CharField(max_length=120)
+    balance = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
     
+    def __str__(self):
+        return self.name
+
+class Transfer(models.Model):
+    from_account = models.ForeignKey(Account, related_name='outgoing_transaction', on_delete=models.CASCADE)
+    to_account = models.ForeignKey(Account, related_name='incoming_transaction', on_delete=models.CASCADE)
+    amount = models.DecimalField(max_digits=12, decimal_places=2)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'Transfer from {self.from_account} to {self.to_account}'
